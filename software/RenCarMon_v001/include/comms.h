@@ -1,16 +1,17 @@
-#ifndef __RACM_WIFI_H__
-#define __RACM_WIFI_H__
-#include "defaults.h"
+#ifndef __COMMS_H__
+#define __COMMS_H__
 #include <stdint.h>
+#include "defaults.h"
+#include "cmd_queue.h"
 
-typedef enum MSG_TYPE
+enum MSG_TYPE
 {
 	RACM_FEEDBACK = 0,
 	RACM_ERR,
 	RACM_DBG
 };
 
-typedef enum MSG_CHANNEL
+enum MSG_CHANNEL
 {
 	NO_MSG = 0,
 	TCP_SERV,
@@ -18,6 +19,7 @@ typedef enum MSG_CHANNEL
 	MQTT_CLIENT
 };
 
+typedef void (*MQTT_Rx_CB)(void);
 typedef struct Comms
 {
 	struct cmd
@@ -69,11 +71,4 @@ typedef struct Comms
 	} msg;
 } Comms_t;
 
-void connectToMqtt();
-void connectToWifi(char *ssid, char *pswd);
-void setup_wifi_mqtt (char *wifi_ssid=DEFAULT_WIFI_SSID, char *wifi_passwd=DEFAULT_WIFI_PASSWD, 
-                      char* mqtt_host=MQTT_HOST, uint16_t mqtt_port = MQTT_PORT,char* mqtt_client_id=MQTT_CLIENT_ID, char* mqtt_usrnm=MQTT_USRNM, char* mqtt_passwd=MQTT_PASSWD);
-  
-void set_renCarMonWiFi_CBs();
-
-#endif // __RACM_WIFI_H__
+#endif // __COMMS_H__

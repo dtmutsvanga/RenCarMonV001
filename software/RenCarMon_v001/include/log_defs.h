@@ -1,0 +1,23 @@
+#ifndef __LOG_DEFS_H__
+#define __LOG_DEFS_H__
+
+#define LOG_LVL_NONE		0
+#define LOG_LVL_INFO		1
+#define LOG_LVL_WARNING		2
+#define LOG_LVL_CRITICAL 	3
+
+#define SYS_COMM			0x0000000F
+#define SYS_COMM_WIFI		0x00000001
+#define SYS_COMM_MQTT		0x00000002
+#define SYS_COMM_TCP		0x00000003
+
+#define SYS_GPIO			0x000000F0
+#define SYS_GPIO_INPUT		0x00000010
+#define SYS_GPIO_OUTPUT		0x00000020
+
+#define SYS_I2C				0x0000F000
+#define SYS_I2C_RTC			0x00001000
+#define SYS_I2C_EEPROM		0x00002000
+
+#define SYS_APP				0xF0000000
+#endif // __LOG_DEFS_H__

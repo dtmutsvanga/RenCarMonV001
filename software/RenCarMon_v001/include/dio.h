@@ -9,7 +9,7 @@ typedef struct dio{
 }dio_t;
 
  extern dio_t dio;
- extern void di_setup();
+ void di_setup();
  void dq_setup();
  void rq_setup();
  void dio_setup();
