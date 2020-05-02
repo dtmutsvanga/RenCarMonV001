@@ -1,6 +1,6 @@
 #include "fsm.h"
 
-extern uint8_t state_table[ST_MAX_STATES][EV_MAX_EVENTS-1] = {
+uint8_t state_table[ST_MAX_STATES][EV_MAX_EVENTS-1] = {
 			/* CMD_IDL  | 		CMD_ARM		| 	CMD_TIM_MODE	|	CMD_ENG_RUN	|	SYS_IN_EOFF	| SYS_TM_TO		*/
 	/* IDLE */ {ST_IDLE		, ST_ARMED_WAIT	,	ST_TIM_MODE		, ST_ENG_RUN	, ST_IDLE		, ST_IDLE			},
 	/* ARMD */ {ST_IDLE		, ST_ARMED		,	ST_ARMED		, ST_ARMED		, ST_ARMED		, ST_ARMED			},
@@ -10,9 +10,10 @@ extern uint8_t state_table[ST_MAX_STATES][EV_MAX_EVENTS-1] = {
 	/* ERUN */ {ST_IDLE		, ST_ARMED_WAIT ,	ST_ENG_RUN		, ST_ENG_RUN	, ST_ENG_RUN	, ST_ENG_RUN		}
 	};
 
+FSM_states_t States[ST_MAX_STATES];
 
 	// Initialize finite state machine functions
-void FSM_Init() 
+FSM_states_t *FSM_Init() 
 {
 	  uint8_t i=0;
 	States[i].id=ST_IDLE;
@@ -50,9 +51,14 @@ void FSM_Init()
   States[i].exit=st_eng_run_exit;
   States[i].init=st_eng_run_init;
   i++;
+
+  // Generate idle state
+  States[ST_IDLE].call_evt.evt=EV_CMD_IDLE;
+  return  States+ST_IDLE;
+
 }
 
-FSM_states_t *FSM_next_state(FSM_states_t *curr_state, FSM_events_t *new_evt) 
+FSM_states_t *FSM_next_state(FSM_states_t *const curr_state, FSM_events_t *const new_evt) 
 {
 	FSM_states_t *nxt_state;
 	eFSM_states nxt_state_id=(eFSM_states)state_table[curr_state->id][new_evt->evt];

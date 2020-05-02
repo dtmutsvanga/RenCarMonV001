@@ -1,8 +1,8 @@
 #ifndef __DEFAULTS_H__
 #define __DEFAULTS_H__
 
-#define DEFAULT_WIFI_SSID	"IoT"
-#define DEFAULT_WIFI_PASSWD	"10T_2020"
+#define WIFI_SSID	"IoT"
+#define WIFI_PASSWD	"10T_2020"
 #define WIFI_MAX_LEN_SSID	15
 #define WIFI_MAX_LEN_PSWD	10
 #define SERIAL_NUM	("RenAuto" + String(WiFi.macAddress()))
@@ -22,6 +22,8 @@
 #define MAX_SEND_RETRY			5
 #define MAX_CMD_QUEUE 20
 
+#define MAX_ENG_RUN_TIME_MIN	30
+#define MAX_TIMER_MODE_TIME_MIN	43200		
 #define LOG_BAUD_RATE 9600
 #define LOG_MAX_MSG_LEN	30
 #endif // __DEFAULTS_H__

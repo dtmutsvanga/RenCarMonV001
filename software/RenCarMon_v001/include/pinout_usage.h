@@ -26,13 +26,13 @@
 #define DI_PWR_PIN			DI_2
 
 // Inexes of respective pins in arrays
-#define REL_IGN			0
-#define REL_FUEL_PUMP	1
+#define REL_IGN_IDX			0
+#define REL_FUEL_PUMP_IDX	1
 
-#define DQ_COMM			0
-#define DQ_PWR			1
+#define DQ_COMM_IDX			0
+#define DQ_PWR_IDX			1
 
-#define DI_PARK			0
-#define DI_PANIC_BTN	1
-#define DI_PWR			2
+#define DI_PARK_IDX			0
+#define DI_PANIC_BTN_IDX	1
+#define DI_PWR_IDX			2
 #endif // PINOUT_USAGE
