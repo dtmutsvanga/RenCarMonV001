@@ -130,7 +130,7 @@ void st_tim_mode_init(FSM_states_t *state, uint8_t save)
 void st_eng_run_init(FSM_states_t *state, uint8_t save)
 {
   // Turn on engine
-  if(save)eepr_save_state(&eeprom_data, state->id, &state->call_evt);
+  if(save)eepr_save_state(&eeprom_data, ST_IDLE, &state->call_evt);
 }
 void st_admin_init(FSM_states_t *state, uint8_t save)
 {
