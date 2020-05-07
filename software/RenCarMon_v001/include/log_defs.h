@@ -6,6 +6,7 @@
 #define LOG_LVL_WARNING		2
 #define LOG_LVL_CRITICAL 	3
 
+#define SYS_LOG_ALL			0xFFFFFFFF
 #define SYS_COMM			0x0000000F
 #define SYS_COMM_WIFI		0x00000001
 #define SYS_COMM_MQTT		0x00000002
@@ -20,4 +21,5 @@
 #define SYS_I2C_EEPROM		0x00002000
 
 #define SYS_APP				0xF0000000
+#define SYS_APP_FSM			0x10000000
 #endif // __LOG_DEFS_H__

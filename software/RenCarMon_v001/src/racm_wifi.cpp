@@ -19,7 +19,7 @@ typedef struct
 	uint8_t cnnctd;
 } WiFi_mngr_t;
 
-static WiFi_mngr_t WiFi_mngr;
+static WiFi_mngr_t WiFi_mngr= {.SSID={0}, .pswd={}, .reconnect_CBs_ctr=0, .connect_CBs_ctr=0, .reconnect_cbs={NULL}, .connect_cbs={NULL}};
 
 void connectToWifi(char *ssid, char *pswd)
 {
@@ -29,14 +29,19 @@ void connectToWifi(char *ssid, char *pswd)
 void connectToWifi_CB()
 {
 	log_msg(LOG_LVL_INFO, SYS_COMM_WIFI, "WiFi Connecting...");
+	log_msg_append(WiFi_mngr.SSID);
+	log_msg_append(" Pswd: ");
+	log_msg_append(WiFi_mngr.pswd);
 	connectToWifi(WiFi_mngr.SSID, WiFi_mngr.pswd);
 }
 
 void onWifiConnect(const WiFiEventStationModeGotIP &event)
 {
-	log_msg(LOG_LVL_INFO, SYS_COMM_WIFI, "WiFi Connected");
+	log_msg(LOG_LVL_CRITICAL, SYS_COMM_WIFI, "WiFi Connected");
 	for (int i = 0; i < WiFi_mngr.connect_CBs_ctr; i++)
 	{
+		log_msg(LOG_LVL_INFO, SYS_COMM_WIFI, "Calling Wifi callback No.");
+		log_msg_append_i(i);
 		WiFi_mngr.connect_cbs[i]();
 	}
 	WiFi_mngr.cnnctd=1;
@@ -45,7 +50,7 @@ void onWifiConnect(const WiFiEventStationModeGotIP &event)
 void onWifiDisconnect(const WiFiEventStationModeDisconnected &event)
 {
 	WiFi_mngr.cnnctd=0;
-	log_msg(LOG_LVL_INFO, SYS_COMM_WIFI, "Disconnected from Wi-Fi.");
+	log_msg(LOG_LVL_CRITICAL, SYS_COMM_WIFI, "Disconnected from Wi-Fi.");
 
 	for (uint8_t i = 0; i < WiFi_mngr.reconnect_CBs_ctr; i++)
 	{
@@ -55,12 +60,19 @@ void onWifiDisconnect(const WiFiEventStationModeDisconnected &event)
 	WiFi_mngr.wifiReconnectTimer.once(2, connectToWifi_CB);
 }
 
-uint8_t wifi_init(char *wifi_ssid, uint8_t ssid_len, char *wifi_passwd, uint8_t pswd_len)
+uint8_t wifi_init(const char *wifi_ssid, uint8_t ssid_len,const char *wifi_passwd, uint8_t pswd_len)
 {
-	WiFi_mngr.reconnect_CBs_ctr = 0;
-	WiFi_mngr.connect_CBs_ctr = 0;
+	log_msg(LOG_LVL_INFO, SYS_COMM_WIFI, "WiFi Init. SSID: ");
+	log_msg_append(wifi_ssid);
+	log_msg_append(" ssid len= ");
+	log_msg_append_i(ssid_len);
+	log_msg_append("\t Passwd: ");
+	log_msg_append(wifi_passwd);
+	log_msg_append(" passwd len= ");
+	log_msg_append_i(pswd_len);
+	
 	memcpy(WiFi_mngr.SSID, wifi_ssid, ssid_len);
-	memcpy(WiFi_mngr.SSID, wifi_passwd, pswd_len);
+	memcpy(WiFi_mngr.pswd, wifi_passwd, pswd_len);
 	WiFi_mngr.wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
 	WiFi_mngr.wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);
 	connectToWifi(WiFi_mngr.SSID, WiFi_mngr.pswd);
@@ -78,6 +90,8 @@ uint8_t wifi_add_connect_CB(WiFi_connect_CB fxn)
 		return 0;
 	WiFi_mngr.connect_cbs[WiFi_mngr.connect_CBs_ctr] = fxn;
 	WiFi_mngr.connect_CBs_ctr++;
+	log_msg(LOG_LVL_INFO, SYS_COMM_WIFI, "WiFi connect callback added index = ");
+	log_msg_append_i(WiFi_mngr.connect_CBs_ctr);
 	return 1;
 }
 

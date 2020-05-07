@@ -18,7 +18,8 @@
 }cmd_t;
 
 void cmd_q_init();
-uint8_t cmd_q_add_to_queue(uint8_t cmd, uint8_t *data, uint8_t data_len);
+uint8_t cmd_q_push(uint8_t cmd, uint8_t *data, uint8_t data_len);
+uint8_t cmd_q_push_2_head(uint8_t cmd, uint8_t *data, uint8_t data_len);
 cmd_t *cmd_q_get_next();
 
 #endif // __CMD_QUEUE_H__
