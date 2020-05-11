@@ -23,6 +23,7 @@ void loop()
 {
   // TODO: Get event, run house keeping
   di_read();
+  curr_state->run(curr_state);
   comms_chk_new_evt(&new_evt);
   if ((nxt_state = FSM_next_state(curr_state, &new_evt)))
   {
@@ -30,7 +31,6 @@ void loop()
     // Publish new state
     comms_hse_keeping(curr_state->id, &curr_state->call_evt, millis(), 1);
   }
-  curr_state->run(curr_state);
   dq_set();
 
   comms_hse_keeping(curr_state->id, &curr_state->call_evt, millis(), 0);
@@ -40,7 +40,34 @@ void loop()
 // Run fxns
 void st_idle(FSM_states_t *state)
 {
-  // Do nothing
+  uint8_t curr_en_state=dio.di[DI_PWR_IDX];
+  uint8_t cur_pvt_st=   state->call_evt.evt_data[0].u8;
+  uint8_t prev_en_state=state->call_evt.evt_data[1].u8;
+  uint32_t en_off_time= state->call_evt.evt_data[2].u32;
+  // Do check if engine off
+  
+  switch (cur_pvt_st)
+  {
+  case 0:
+    if(!prev_en_state && curr_en_state){
+    en_off_time=millis();
+    cur_pvt_st=1;
+  }
+    break;
+  case 1:
+  // If time has passed, turn off controller
+    if(millis() - en_off_time > (uint32_t)CONTROLLER_AUTO_OFF_DELAY_MS){
+      dio.dq[DQ_PWR_IDX]=0;
+    }
+    else if(!curr_en_state){
+         cur_pvt_st=0;
+    }
+  break;
+  }
+  state->call_evt.evt_data[0].u8=cur_pvt_st;
+  state->call_evt.evt_data[1].u8=curr_en_state;
+  state->call_evt.evt_data[2].u32=en_off_time;
+  
 }
 void st_armd(FSM_states_t *state)
 {
@@ -48,7 +75,7 @@ void st_armd(FSM_states_t *state)
 }
 void st_armd_wait(FSM_states_t *state)
 {
-  //Check engine off event. If true, add engine off event to fsm queue
+  //Check engine off . If true, add engine off event to fsm queue
   if (dio.di[DI_PWR_IDX])
   {
     log_msg(LOG_LVL_WARNING, SYS_APP, "Power Off Event");
@@ -68,7 +95,37 @@ void st_tim_mode(FSM_states_t *state)
 }
 void st_eng_run(FSM_states_t *state)
 {
-  // Do nothing
+  // Ignition is turned on first, for 3 seconds
+  switch (state->call_evt.evt_data[2].u8)
+  {
+    // Ignition on, starter not yet cranked
+  case 0:
+    if(millis() - state->call_evt.evt_data[1].u32 > ENGINE_IGN_TM_B4_START){
+    // Turn on the starter.
+    dio.rq[REL_STRT_IDX]=1;
+    state->call_evt.evt_data[1].u32=millis();
+    state->call_evt.evt_data[2].u8=1; // state change
+  }
+    break;
+  case 1:
+   if(millis() - state->call_evt.evt_data[1].u32 > STARTER_PULSE_TIME){
+    // Turn on the starter.
+    dio.rq[REL_STRT_IDX]=0;
+    state->call_evt.evt_data[1].u32=millis();
+    state->call_evt.evt_data[2].u8=2; // state change
+  }
+  break;
+    case 2:
+   if(millis() - state->call_evt.evt_data[1].u32 > state->call_evt.evt_data[0].u8 *60*1000){
+    // Turn on the starter.
+    dio.dq[DQ_IGN_IDX]=0;
+    cmd_q_push_2_head(EV_CMD_IDLE, NULL, 0);
+  }
+  break;
+  default:
+    break;
+  }
+  
 }
 void st_admin(FSM_states_t *state)
 {
@@ -83,7 +140,7 @@ void st_idle_exit(FSM_states_t *state)
 void st_armd_exit(FSM_states_t *state)
 {
   // Turn off all peripherals that were initalted by init
-  dio.rq[REL_IGN_IDX] = 0;
+  //dio.rq[REL_STRT_IDX] = 0;
   dio.rq[REL_FUEL_PUMP_IDX] = 0;
 }
 void st_armd_wait_exit(FSM_states_t *state)
@@ -97,6 +154,8 @@ void st_tim_mode_exit(FSM_states_t *state)
 void st_eng_run_exit(FSM_states_t *state)
 {
   // Disable engine
+  dio.dq[DQ_IGN_IDX]=0;
+  dio.rq[REL_STRT_IDX]=0;
 }
 void st_admin_exit(FSM_states_t *state)
 {
@@ -105,19 +164,22 @@ void st_admin_exit(FSM_states_t *state)
 // Init fxns
 void st_idle_init(FSM_states_t *state, uint8_t save)
 {
+  state->call_evt.evt_data[0].u32=0;
+  state->call_evt.evt_data[1].u8=0;
+  state->call_evt.evt_data[2].u32=0;
    if(save)eepr_save_state(&eeprom_data, state->id, &state->call_evt);
 }
 void st_armd_init(FSM_states_t *state, uint8_t save)
 {
   // Turn on requested peripherals for dmin mode
-  dio.rq[REL_IGN_IDX] = 1;
+  //dio.rq[REL_STRT_IDX] = 1;
   dio.rq[REL_FUEL_PUMP_IDX] = 1;
   if(save)eepr_save_state(&eeprom_data, state->id, &state->call_evt);
 }
 void st_armd_wait_init(FSM_states_t *state, uint8_t save)
 {
   // Do nothing. Clear flag engine off
-  dio.rq[REL_IGN_IDX] = 0;
+  dio.rq[REL_STRT_IDX] = 0;
   dio.rq[REL_FUEL_PUMP_IDX] = 0;
   if(save)eepr_save_state(&eeprom_data, ST_ARMED, &state->call_evt);
 }
@@ -129,7 +191,16 @@ void st_tim_mode_init(FSM_states_t *state, uint8_t save)
 }
 void st_eng_run_init(FSM_states_t *state, uint8_t save)
 {
-  // Turn on engine
+  // Check if car is off, and in park. If not, return to idel
+  if(!dio.di[DI_PWR_IDX]){
+    cmd_q_push_2_head(EV_CMD_IDLE, NULL, 0);
+    return;
+  }
+  // Turn on the ignition key
+  dio.dq[DQ_IGN_IDX]=1;
+  // Save the time IGN pin was started
+  state->call_evt.evt_data[1].u32=millis();
+  state->call_evt.evt_data[2].u8=0;   // Initial state 
   if(save)eepr_save_state(&eeprom_data, ST_IDLE, &state->call_evt);
 }
 void st_admin_init(FSM_states_t *state, uint8_t save)

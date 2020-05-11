@@ -77,7 +77,7 @@ uint8_t parse_message(char *topic, char *payload, int len)
     {
       if (len < 2)
       {
-        log_msg(LOG_LVL_WARNING, SYS_COMM_MQTT, "Invalid MQTT command EV_CMD_ENG_RUN. Length < 5, Len = ");
+        log_msg(LOG_LVL_WARNING, SYS_COMM_MQTT, "Invalid MQTT command EV_CMD_ENG_RUN. Length < 2, Len = ");
         log_msg_append_i(len);
         return 0;
       }
@@ -87,9 +87,9 @@ uint8_t parse_message(char *topic, char *payload, int len)
         tme = MAX_ENG_RUN_TIME_MIN;
       log_msg(LOG_LVL_INFO, SYS_COMM_MQTT, "EV_CMD_ENG_RUN received. Time = ");
       log_msg_append_i(tme);
-      cmd_q_push(EV_CMD_ENG_RUN, (uint8_t *)&time, sizeof(tme));
+      cmd_q_push(EV_CMD_ENG_RUN, (uint8_t *)&tme, sizeof(tme));
 
-           MQTT_mngr.client.publish(topic, 2, 1, "-",2);
+      MQTT_mngr.client.publish(topic, 2, 1, "-",2);
       MQTT_mngr.client.publish("Feedback", 2, 1, "Engine run command received",2);
     }
     break;

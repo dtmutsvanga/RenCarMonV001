@@ -60,6 +60,7 @@ void onWifiDisconnect(const WiFiEventStationModeDisconnected &event)
 	WiFi_mngr.wifiReconnectTimer.once(2, connectToWifi_CB);
 }
 
+
 uint8_t wifi_init(const char *wifi_ssid, uint8_t ssid_len,const char *wifi_passwd, uint8_t pswd_len)
 {
 	log_msg(LOG_LVL_INFO, SYS_COMM_WIFI, "WiFi Init. SSID: ");
@@ -75,6 +76,8 @@ uint8_t wifi_init(const char *wifi_ssid, uint8_t ssid_len,const char *wifi_passw
 	memcpy(WiFi_mngr.pswd, wifi_passwd, pswd_len);
 	WiFi_mngr.wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
 	WiFi_mngr.wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);
+	WiFi.mode(WIFI_AP_STA);
+	WiFi.softAP(WIFI_AP_SSID,WIFI_AP_PASSWD, 1, 0, 2);
 	connectToWifi(WiFi_mngr.SSID, WiFi_mngr.pswd);
 	return true;
 }

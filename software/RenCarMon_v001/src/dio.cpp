@@ -1,10 +1,9 @@
 #include <Arduino.h>
 #include "dio.h"
 
-const uint8_t rq[NUM_RQ] = {(uint8_t)REL_IGN_PIN, (uint8_t)REL_FUEL_PUMP_PIN};
-const uint8_t dq[NUM_DQ] = {DQ_COMM_PIN, DQ_PWR_PIN};
+const uint8_t rq[NUM_RQ] = {(uint8_t)REL_STRT_PIN, (uint8_t)REL_FUEL_PUMP_PIN};
+const uint8_t dq[NUM_DQ] = {DQ_COMM_PIN, DQ_IGN_PIN,DQ_PWR_PIN};
 const uint8_t di[NUM_DI] = {DI_PARK_PIN, DI_PANIC_BTN_PIN, DI_PWR_PIN};
-void extra(){}
 void di_setup()
 {
 	// Initialize digital inputs

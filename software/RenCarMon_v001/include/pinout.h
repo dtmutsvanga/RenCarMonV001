@@ -47,8 +47,8 @@
 #define DI_PWR_OFF 	1
 
 // Digital Outputs
-#define DQ_0		14		// Digital Output 0
-#define DQ_1		12		// Digital Output 1
+#define DQ_0		12		// Digital Output 1
+#define DQ_1		14		// Digital Output 0
 #define DQ_2		2		// Digital Output Power 
 #define DQ_LED_BL	LED_BUILTIN	
 #define NUM_DQ	3
@@ -57,8 +57,8 @@
 #define DQ_OFF	0
 
 // Relay Outputs
-#define RQ_0	13			// Relay Output 0
-#define RQ_1	15			// Relay Ouput 1
+#define RQ_0	15			// Relay Ouput 1
+#define RQ_1	13			// Relay Output 0
 #define NUM_RQ	2
 #define RQ_OUTPUT_MODE	OUTPUT
 #define RQ_ON	1	

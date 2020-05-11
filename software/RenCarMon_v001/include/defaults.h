@@ -8,8 +8,10 @@
 #define SERIAL_NUM	("RenAuto" + String(WiFi.macAddress()))
 #define WIFI_MAX_CONNECT_CBs	5
 #define WIFI_MAX_RECONNECT_CBs	5
-#define WIFI_RECONNECT_PERIOD	2
+#define WIFI_RECONNECT_PERIOD	4
 
+#define WIFI_AP_SSID "RenCarMon"
+#define WIFI_AP_PASSWD	"RencM2020"
 #define MQTT_HOST	"mqtt.flespi.io"//"www.maqiatto.com"
 #define MQTT_PORT	1883
 #define MQTT_USRNM	"FlespiToken uFVdYlJBIfjULXUqgDTR2jA8CBMYVkodQ7gCgN1OSaysYhI2IpJBz9zZybNilZlZ" //"dtmutsvanga@yahoo.com"
@@ -35,4 +37,8 @@
 #define OTAUSER         "admin"    // Set OTA user
 #define OTAPASSWORD     "admin"    // Set OTA password
 #define OTAPATH         "/firmware"// Set path for update
+
+#define ENGINE_IGN_TM_B4_START	5000
+#define STARTER_PULSE_TIME			1000
+#define CONTROLLER_AUTO_OFF_DELAY_MS	(180*60*1000)
 #endif // __DEFAULTS_H__
