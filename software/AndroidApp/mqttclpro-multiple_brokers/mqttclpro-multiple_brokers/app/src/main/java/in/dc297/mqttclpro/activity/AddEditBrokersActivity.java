@@ -71,8 +71,10 @@ public class AddEditBrokersActivity extends AppCompatPreferenceActivity {
     public SharedPreferences getSharedPreferences(String name, int mode) {
         return mBindablepreferences;
     }
+
     public void callOptionMenuSave(){
-        onOptionsItemSelected(optionsMenu.findItem(R.id.save));
+        if(mqttClients.getNumClients()< 1)
+            onOptionsItemSelected(optionsMenu.findItem(R.id.save));
     }
 
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
@@ -203,7 +205,7 @@ public class AddEditBrokersActivity extends AppCompatPreferenceActivity {
             broker = new BrokerEntity();
             mBindablepreferences = new MyBrokerPreferences(broker);
         }
-        //callOptionMenuSave();
+
     }
 
 
@@ -271,7 +273,7 @@ public class AddEditBrokersActivity extends AppCompatPreferenceActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_add_edit_brokers, menu);
         optionsMenu=menu;
-        mqttClients.
+
         callOptionMenuSave();
         return true;
     }

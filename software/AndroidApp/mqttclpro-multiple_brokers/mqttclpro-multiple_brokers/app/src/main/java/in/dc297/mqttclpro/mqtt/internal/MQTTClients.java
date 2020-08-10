@@ -112,6 +112,9 @@ public class MQTTClients {
         mSharedPreferences.registerOnSharedPreferenceChangeListener(mSharedPreferenceChangeListener);
     }
 
+    public int getNumClients() {
+        return this.clients.size();
+    }
     public synchronized static MQTTClients getInstance(MQTTClientApplication mqttClientApplication){
         if(instance == null){
             Log.i(MQTTClients.class.getName(),"creating new instance");

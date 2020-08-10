@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.concurrent.ExecutorService;
@@ -47,7 +48,7 @@ public class BrokersListActivity extends AppCompatActivity {
     private ReactiveEntityStore<Persistable> data;
     private ExecutorService executor;
     private BrokersListAdapter adapter;
-
+    static int firstRun=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,8 +89,18 @@ public class BrokersListActivity extends AppCompatActivity {
         if(getAdsFirstTime()) new AdsEnabledDialogFragment().show(getFragmentManager(),"ADS_ENABLED_FRAGMENT");
         AdsHelper.initializeAds((AdView)findViewById(R.id.adView),this);
 
-        FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab);
-        fab2.callOnClick();
+
+
+        if(firstRun==0){
+            FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab);
+            fab2.callOnClick();
+            final Button subscribeButton = (Button) findViewById(R.id.subscribe_button);
+            //findViewById(R.id.subsctibeTopicListView).
+            //subscribeButton.callOnClick();
+            firstRun++;
+        }
+
+
         //AddEditBrokersActivity.
        // TextInputEditText txt = (TextInputEditText) findViewById(R.id.)
 
