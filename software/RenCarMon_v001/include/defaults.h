@@ -16,11 +16,11 @@
 #define MQTT_PORT	1883
 #define MQTT_USRNM	"FlespiToken uFVdYlJBIfjULXUqgDTR2jA8CBMYVkodQ7gCgN1OSaysYhI2IpJBz9zZybNilZlZ" //"dtmutsvanga@yahoo.com"
 #define MQTT_PASSWD	"vision2020"
-#define MQTT_CLIENT_ID	"mqtt-board-panel-874423d4"//"NissanTiida"
+#define MQTT_CLIENT_ID	"AFF7735_CTRLLR"//"NissanTiida"
 #define MQTT_RECONNECT_PRD_s		2
 
-#define MQTT_MAX_LEN_HOST 25
-#define MQTT_MAX_LEN_PASWD	15
+#define MQTT_MAX_LEN_HOST 		25
+#define MQTT_MAX_LEN_PASWD		15
 #define MQTT_MAX_LEN_CLIENT_ID	20
 #define MQTT_MAX_LEN_USRNM		90
 
@@ -41,4 +41,5 @@
 #define ENGINE_IGN_TM_B4_START	5000
 #define STARTER_PULSE_TIME			1000
 #define CONTROLLER_AUTO_OFF_DELAY_MS	(180*60*1000)
+#define COMMS_UPDATE_INTERVAL	(60000*5)
 #endif // __DEFAULTS_H__

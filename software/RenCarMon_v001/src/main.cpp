@@ -76,7 +76,7 @@ void st_armd(FSM_states_t *state)
 void st_armd_wait(FSM_states_t *state)
 {
   //Check engine off . If true, add engine off event to fsm queue
-  if (dio.di[DI_PWR_IDX])
+  if (1/*dio.di[DI_PWR_IDX]*/)
   {
     log_msg(LOG_LVL_WARNING, SYS_APP, "Power Off Event");
     delay(500);

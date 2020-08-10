@@ -18,6 +18,7 @@ enum MSG_TYPE {
 
 enum MSG_INFO {
 	MSG_INFO_SYS_DATA,
-	MSG_INFO_LOG
+	MSG_INFO_LOG,
+	MSG_INFO_FEEDBCK
 };
 #endif // __COMMS_DEFS_H__

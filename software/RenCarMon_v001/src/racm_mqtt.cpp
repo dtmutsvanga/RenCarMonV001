@@ -10,7 +10,6 @@
 #include "comms_defs.h"
 
 #define DELAY_ms(x) delay(x)
-
 // Commands
 typedef struct
 {
@@ -40,15 +39,19 @@ uint8_t parse_message(char *topic, char *payload, int len)
       log_msg(LOG_LVL_INFO, SYS_COMM_MQTT, "EV_CMD_IDLE received");
         cmd_q_push(EV_CMD_IDLE, NULL, 0);
         MQTT_mngr.client.publish(topic, 2, 1, "-",2);
-         MQTT_mngr.client.publish("Feedback", 2, 1, "IDLE command received",2);
+        const char *msg="IDLE command received";
+         MQTT_mngr.client.publish("Feedback", 2, 1, msg, strlen(msg));
       
     }
       break;
     case EV_CMD_ARM:
+    {
       log_msg(LOG_LVL_INFO, SYS_COMM_MQTT, "EV_CMD_ARM received");
       cmd_q_push(EV_CMD_ARM, NULL, 0);
       MQTT_mngr.client.publish(topic, 2, 1, "-",2);
-      MQTT_mngr.client.publish("Feedback", 2, 1, "ARM command received",2);
+      const char* msg="ARM command received";
+      MQTT_mngr.client.publish("Feedback", 2, 1, msg, strlen(msg));
+    }
       break;
     case EV_CMD_TIM_MODE:
     {
@@ -69,7 +72,8 @@ uint8_t parse_message(char *topic, char *payload, int len)
       log_msg_append_i(tme);
       cmd_q_push(EV_CMD_TIM_MODE, (uint8_t *)&tme, sizeof(uint16_t));
        MQTT_mngr.client.publish(topic, 2, 1, "-",2);
-      MQTT_mngr.client.publish("Feedback", 2, 1, "Timer command received",2);
+      const char *msg= "Timer mode command received";
+       MQTT_mngr.client.publish("Feedback", 2, 1, msg, strlen(msg));
     }
     break;
     case EV_CMD_ENG_RUN:
@@ -90,14 +94,18 @@ uint8_t parse_message(char *topic, char *payload, int len)
       cmd_q_push(EV_CMD_ENG_RUN, (uint8_t *)&tme, sizeof(tme));
 
       MQTT_mngr.client.publish(topic, 2, 1, "-",2);
-      MQTT_mngr.client.publish("Feedback", 2, 1, "Engine run command received",2);
+      const char *msg="Run Engine command received";
+      MQTT_mngr.client.publish("Feedback", 2, 1,msg ,strlen(msg));
     }
     break;
     case EV_CMD_ADMIN:
-      log_msg(LOG_LVL_INFO, SYS_COMM_MQTT, "EV_CMD_ADMIN received");
+      {
+        log_msg(LOG_LVL_INFO, SYS_COMM_MQTT, "EV_CMD_ADMIN received");
       cmd_q_push(EV_CMD_ADMIN, NULL, 0);
       MQTT_mngr.client.publish(topic, 2, 1, "-",2);
-      MQTT_mngr.client.publish("Feedback", 2, 1, "Admin command received",2);
+      const char *msg= "Admin command received";
+      MQTT_mngr.client.publish("Feedback", 2, 1,msg ,strlen(msg));
+      }
       break;
     default:
       log_msg(LOG_LVL_WARNING, SYS_COMM_MQTT, "Unknown command received. ID = ");
@@ -209,6 +217,8 @@ void mqtt_init(const char *mqtt_host = MQTT_HOST, uint16_t mqtt_port = MQTT_PORT
   MQTT_mngr.client.setServer(mqtt_host, mqtt_port);
   MQTT_mngr.client.setCredentials(mqtt_usrnm, mqtt_passwd);
   MQTT_mngr.client.setClientId(mqtt_client_id);
+  MQTT_mngr.client.setCleanSession(false);
+  //MQTT_mngr.client.setKeepAlive(2);
   MQTT_mngr.initd = 1;
 }
 

@@ -68,7 +68,7 @@ uint8_t comms_hse_keeping(uint8_t curr_state, FSM_events_t *curr_state_evt_data,
 	static uint32_t prev_update = 0;
 	server.handleClient();
 	// Update Mqtt periodically
-	if (millis() - prev_update > 10000 || immediate)
+	if (millis() - prev_update > COMMS_UPDATE_INTERVAL || immediate)
 	{
 		char buff[140];
 		buff[0] = MSG_INFO_SYS_DATA;
