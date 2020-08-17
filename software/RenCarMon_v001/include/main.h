@@ -31,4 +31,6 @@ typedef struct
 extern racm_eep_data_t eeprom_data;
 void eeprom_get_data(racm_eep_data_t *data);
 void eepr_save_state(racm_eep_data_t *eepr_data, eFSM_states id, FSM_events_t *ev);
+void wake_from_ds();
+void ds_hse_keeping();
 #endif // __MAIN_H__

@@ -4,6 +4,7 @@
 
 typedef struct dio{
 	uint8_t di[NUM_DI];
+	uint8_t di_frnt[NUM_DI];
 	uint8_t dq[NUM_DQ];
 	uint8_t rq[NUM_RQ];
 }dio_t;

@@ -40,6 +40,14 @@
 
 #define ENGINE_IGN_TM_B4_START	5000
 #define STARTER_PULSE_TIME			1000
-#define CONTROLLER_AUTO_OFF_DELAY_MS	(180*60*1000)
+#define CONTROLLER_AUTO_OFF_DELAY_MS	(30*60000)  // 30 minutes
 #define COMMS_UPDATE_INTERVAL	(60000*5)
+
+#define DS_SHRT_TME_s       120
+#define DS_COMM_UPDT_s      (2*60*60)  // 2 Hours
+#define DS_COMM_UPDT_TIME   (15*60*60) // 10 minutes    
+#define DS_OPTION       4           // disable RF after deep-sleep wake up
+#define DS_RTC_FLAG_ADDR    0x00000000
+#define DS_RTC_TME_CTR_ADDR 0x00000001
+#define DS_RTC_FLAG         0x00FA9907
 #endif // __DEFAULTS_H__
