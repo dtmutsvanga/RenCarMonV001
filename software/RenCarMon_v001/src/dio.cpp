@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #include "dio.h"
 
-const uint8_t rq[NUM_RQ] = {(uint8_t)REL_IGN_PIN, (uint8_t)REL_FUEL_PUMP_PIN};
-const uint8_t dq[NUM_DQ] = {DQ_COMM_PIN, DQ_PWR_PIN};
-const uint8_t di[NUM_DI] = {DI_PARK_PIN, DI_PANIC_BTN_PIN, DI_PWR_PIN};
-void extra(){}
+const uint8_t rq[NUM_RQ] = {REL_STRT_PIN,REL_FUEL_PUMP_PIN, REL_IGN_PIN};
+const uint8_t dq[NUM_DQ] = {DQ_COMM_SW_PIN, DQ_COMM_PWR_PIN};
+const uint8_t di[NUM_DI] = {DI_COMM_MOD_STATE_PIN, DI_PANIC_BTN_PIN, DI_IGN_STATE_PIN};
+
 void di_setup()
 {
 	// Initialize digital inputs
@@ -42,9 +42,17 @@ void dio_setup()
 void di_read()
 {
 	// Read digital inputs
+	uint8_t prev_val;
 	for (uint8_t i = 0; i < NUM_DI; i++)
 	{
+		dio.di_frnt[i]=0;
+		prev_val = dio.di[i];
 		dio.di[i] = digitalRead(di[i]);
+		// Values different
+		if(!prev_val == 0 && dio.di[i] == 1) 
+		{
+			dio.di_frnt[i]=1;
+		}
 	}
 }
 

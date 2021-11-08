@@ -3,72 +3,26 @@
 #include <stdint.h>
 #include "defaults.h"
 #include "cmd_queue.h"
-
-enum MSG_TYPE
-{
-	RACM_FEEDBACK = 0,
-	RACM_ERR,
-	RACM_DBG
-};
-
-enum MSG_CHANNEL
-{
-	NO_MSG = 0,
-	TCP_SERV,
-	HTTP_SERV,
-	MQTT_CLIENT
-};
+#include "fsm_states.h"
 
 typedef void (*MQTT_Rx_CB)(void);
-typedef struct Comms
+
+// Communications
+typedef struct comms_data
 {
-	struct cmd
+	char WiFi_SSID[WIFI_MAX_LEN_SSID];
+	char WiFi_PSWD[WIFI_MAX_LEN_PSWD];
+	struct mqtt
 	{
-		struct state_arm
-		{
-			int8_t en;
-			uint8_t rq_en; // Relay outputs to enable. Each bit represents a relay to be enabled
-			uint8_t dq_en; // Digital outputs to enable.
-			MSG_CHANNEL src;	// Source of command, wifi
-		} state_arm;
+		char host[MQTT_MAX_LEN_HOST];
+		char usrnm[MQTT_MAX_LEN_USRNM];
+		char pswd[MQTT_MAX_LEN_PASWD];
+		char clientid[MQTT_MAX_LEN_CLIENT_ID];
+		uint16_t port;
+	} smqtt;
+} comms_t;
 
-		struct state_timer_mode
-		{
-			int8_t en;
-			int time_min;
-			MSG_CHANNEL src;
-		} state_timer_mode;
-
-		struct state_engine_run
-		{
-			int8_t en;
-			int time_min;
-			MSG_CHANNEL src;
-		} state_engine_run;
-
-		struct system_cmd
-		{
-			int8_t en;
-			int cmd;
-			MSG_CHANNEL src;
-		} state_reset;
-	} cmd;
-
-	struct system_status{
-		int8_t curr_state;
-		uint32_t syetm_time;			// Current system time since boot
-		int *state_time;				// Applies to engine run and time run
-		uint8_t *dq;
-		uint8_t *rq;
-		uint8_t *di;
-	}system_status;
-
-	struct msg
-	{
-		MSG_TYPE type;
-		char msg[MAX_COMM_MSGS_PER_CYCLE][MAX_COMM_MSG_LEN]; // Store up to 5 different messages
-		MSG_CHANNEL channel[MAX_COMM_MSGS_PER_CYCLE];
-	} msg;
-} Comms_t;
-
+void comms_init( comms_t *init_data);
+uint8_t comms_chk_new_evt(FSM_events_t *evt);
+uint8_t comms_hse_keeping(uint8_t curr_state, FSM_events_t *curr_state_evt_data, uint32_t sys_time, uint8_t immediate);
 #endif // __COMMS_H__
